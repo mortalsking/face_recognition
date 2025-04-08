@@ -14,11 +14,11 @@ class SimpleFaceRecognition:
         self.label_names = {}
         self.label_counter = 0
         
-        # Create directory if it doesn't exist
+       
         if not os.path.exists(data_directory):
             os.makedirs(data_directory)
             
-        # Try to load existing model and label data
+       
         self.load_data()
 
     def detect_faces(self, frame):
@@ -60,7 +60,7 @@ class SimpleFaceRecognition:
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
             cv2.imshow("Face Registration", frame)
             
-            # Wait for 100ms or key press
+            
             if cv2.waitKey(100) & 0xFF == ord('q'):
                 break
                 
@@ -68,12 +68,12 @@ class SimpleFaceRecognition:
         cv2.destroyAllWindows()
         
         if count == 20:
-            # Assign a new label for this person
+           
             new_label = self.label_counter
             self.label_counter += 1
             self.label_names[new_label] = name
             
-            # Add face samples to training data
+            
             for face_sample in face_samples:
                 self.face_data.append(face_sample)
                 self.face_labels.append(new_label)
@@ -99,10 +99,10 @@ class SimpleFaceRecognition:
 
     def save_data(self):
         """Save the model and label data"""
-        # Save the trained model
+       
         self.recognizer.write(os.path.join(self.data_directory, "face_model.xml"))
         
-        # Save the label names dictionary and counter
+        
         with open(os.path.join(self.data_directory, "label_data.pkl"), "wb") as f:
             data = {
                 "label_names": self.label_names,
@@ -110,7 +110,7 @@ class SimpleFaceRecognition:
             }
             pickle.dump(data, f)
             
-        # Save training data
+      
         with open(os.path.join(self.data_directory, "training_data.pkl"), "wb") as f:
             data = {
                 "face_data": self.face_data,
@@ -127,16 +127,16 @@ class SimpleFaceRecognition:
         training_path = os.path.join(self.data_directory, "training_data.pkl")
         
         if os.path.exists(model_path) and os.path.exists(label_path) and os.path.exists(training_path):
-            # Load the model
+           
             self.recognizer.read(model_path)
             
-            # Load label names and counter
+           
             with open(label_path, "rb") as f:
                 data = pickle.load(f)
                 self.label_names = data["label_names"]
                 self.label_counter = data["label_counter"]
                 
-            # Load training data
+            
             with open(training_path, "rb") as f:
                 data = pickle.load(f)
                 self.face_data = data["face_data"]
@@ -170,12 +170,12 @@ class SimpleFaceRecognition:
                 face_roi = gray[y:y+h, x:x+w]
                 face_roi = cv2.resize(face_roi, (100, 100))
                 
-                # Predict the face
+               
                 try:
                     label, confidence = self.recognizer.predict(face_roi)
                     
-                    # Lower confidence value means better match in LBPH
-                    if confidence < 70:  # Threshold can be adjusted
+                   
+                    if confidence < 70:  
                         name = self.label_names.get(label, "Unknown")
                         
                         # Log attendance
@@ -184,32 +184,32 @@ class SimpleFaceRecognition:
                             attendance_log[name] = current_time
                             print(f"Attendance marked for {name} at {current_time}")
                         
-                        # Draw rectangle and name
+                        
                         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
                         cv2.putText(frame, f"{name} ({confidence:.1f})", 
                                     (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
                     else:
-                        # Unknown face
+                        
                         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
                         cv2.putText(frame, "Unknown", (x, y-10), 
                                     cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
                 except:
-                    # Handle prediction errors
+                   
                     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
                     cv2.putText(frame, "Error", (x, y-10), 
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
             
-            # Show the frame
+            
             cv2.imshow("Face Recognition", frame)
             
-            # Exit on 'q' press
+           
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
                 
         cap.release()
         cv2.destroyAllWindows()
         
-        # Save attendance log
+       
         log_path = os.path.join(self.data_directory, f"attendance_{datetime.now().strftime('%Y%m%d')}.txt")
         with open(log_path, "w") as f:
             f.write("Name,Time\n")
@@ -219,7 +219,7 @@ class SimpleFaceRecognition:
         print(f"Attendance log saved to {log_path}")
 
 
-# Main application
+
 def main():
     print("===== Simple Face Recognition System =====")
     

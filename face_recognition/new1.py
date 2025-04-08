@@ -133,7 +133,7 @@ class SimpleFaceRecognition:
            
             with open(label_path, "rb") as f:
                 data = pickle.load(f)
-                self.label_names = data["label_names"]
+                self.label_names  =  data["label_names"]
                 self.label_counter = data["label_counter"]
                 
             
@@ -178,7 +178,7 @@ class SimpleFaceRecognition:
                     if confidence < 70:  
                         name = self.label_names.get(label, "Unknown")
                         
-                        # Log attendance
+                       
                         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         if name not in attendance_log:
                             attendance_log[name] = current_time

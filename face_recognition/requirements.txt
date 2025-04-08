@@ -1,2 +1,3 @@
 opencv-contrib-python
 numpy
+python3.6
